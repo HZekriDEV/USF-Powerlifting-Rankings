@@ -1,1 +1,0 @@
-# USF-Powerlifting-Rankings
