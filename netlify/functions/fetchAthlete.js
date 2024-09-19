@@ -4,9 +4,9 @@ exports.handler = async function (event, context) {
   const name = event.queryStringParameters.name;
 
   try {
-    // Replace with the actual API endpoint or logic to fetch data
+    // Querying the Open Powerlifting dataset using a proxy API service
     const response = await axios.get(
-      `https://api.openpowerlifting.org/athletes?name=${encodeURIComponent(name)}`
+      `https://lifterapi.com/athletes?name=${encodeURIComponent(name)}`
     );
     const data = response.data;
 
