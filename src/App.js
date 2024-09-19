@@ -1,114 +1,51 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
+import AthleteList from './components/AthleteList';
+import AthleteSearch from './components/AthleteSearch';
+import Filters from './components/Filters';
 
-const App = () => {
+function App() {
   const [athletes, setAthletes] = useState([]);
-  const [query, setQuery] = useState('');
-  const [metric, setMetric] = useState('total'); // Can be 'total', 'dots', 'glPoints'
-  const [gender, setGender] = useState('all');
-  const [weightClass, setWeightClass] = useState('all');
+  const [filters, setFilters] = useState({
+    gender: '',
+    weightClass: '',
+    metric: 'total',
+  });
 
-  // Fetch athletes data from Open Powerlifting API
-  const fetchAthletes = async () => {
-    const response = await axios.get('https://api.openpowerlifting.org/lifters');
-    setAthletes(response.data);
+  const addAthlete = async (name) => {
+    try {
+      const response = await axios.get(
+        `/.netlify/functions/fetchAthlete?name=${encodeURIComponent(name)}`
+      );
+      const data = response.data;
+
+      if (data.length > 0) {
+        setAthletes([...athletes, data[0]]);
+      } else {
+        alert('Athlete not found.');
+      }
+    } catch (error) {
+      console.error('Error fetching athlete data:', error);
+    }
   };
-
-  useEffect(() => {
-    fetchAthletes();
-  }, []);
 
   const filteredAthletes = athletes
     .filter((athlete) => {
-      return gender === 'all' || athlete.sex === gender;
+      if (filters.gender && athlete.sex !== filters.gender) return false;
+      if (filters.weightClass && athlete.weightClass !== filters.weightClass)
+        return false;
+      return true;
     })
-    .filter((athlete) => {
-      return weightClass === 'all' || athlete.weightclass === weightClass;
-    })
-    .sort((a, b) => b[metric] - a[metric]);
-
-  const handleAddAthlete = async () => {
-    const response = await axios.get(
-      `https://api.openpowerlifting.org/lifters/${query}`
-    );
-    setAthletes((prevAthletes) => [...prevAthletes, response.data]);
-  };
+    .sort((a, b) => b[filters.metric] - a[filters.metric]);
 
   return (
     <div>
       <h1>Powerlifting Leaderboard</h1>
-
-      <input
-        type="text"
-        placeholder="Search by athlete name"
-        value={query}
-        onChange={(e) => setQuery(e.target.value)}
-      />
-      <button onClick={handleAddAthlete}>Add Athlete</button>
-
-      <div>
-        <label htmlFor="metric">Sort By:</label>
-        <select
-          id="metric"
-          value={metric}
-          onChange={(e) => setMetric(e.target.value)}
-        >
-          <option value="total">Total</option>
-          <option value="dots">DOTS</option>
-          <option value="glPoints">GL Points</option>
-        </select>
-
-        <label htmlFor="gender">Gender:</label>
-        <select
-          id="gender"
-          value={gender}
-          onChange={(e) => setGender(e.target.value)}
-        >
-          <option value="all">All</option>
-          <option value="M">Male</option>
-          <option value="F">Female</option>
-        </select>
-
-        <label htmlFor="weightClass">Weight Class:</label>
-        <select
-          id="weightClass"
-          value={weightClass}
-          onChange={(e) => setWeightClass(e.target.value)}
-        >
-          <option value="all">All</option>
-          <option value="59">59 kg</option>
-          <option value="66">66 kg</option>
-          <option value="74">74 kg</option>
-          {/* Add more weight classes as needed */}
-        </select>
-      </div>
-
-      <table>
-        <thead>
-          <tr>
-            <th>Name</th>
-            <th>Total</th>
-            <th>DOTS</th>
-            <th>GL Points</th>
-            <th>Weight Class</th>
-            <th>Gender</th>
-          </tr>
-        </thead>
-        <tbody>
-          {filteredAthletes.map((athlete) => (
-            <tr key={athlete.id}>
-              <td>{athlete.name}</td>
-              <td>{athlete.total}</td>
-              <td>{athlete.dots}</td>
-              <td>{athlete.glPoints}</td>
-              <td>{athlete.weightclass}</td>
-              <td>{athlete.sex}</td>
-            </tr>
-          ))}
-        </tbody>
-      </table>
+      <AthleteSearch addAthlete={addAthlete} />
+      <Filters filters={filters} setFilters={setFilters} />
+      <AthleteList athletes={filteredAthletes} metric={filters.metric} />
     </div>
   );
-};
+}
 
 export default App;
