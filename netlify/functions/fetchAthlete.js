@@ -1,40 +1,35 @@
-const csv = require('csv-parser');
-const fs = require('fs');
-const path = require('path');
+const axios = require('axios');
+const cheerio = require('cheerio');
 
 exports.handler = async function (event, context) {
-  const name = event.queryStringParameters.name.toLowerCase();
-  const results = [];
+  const athleteName = event.queryStringParameters.name;
+
+  // Example OpenPowerlifting search URL structure; you'll need to know the athlete's name or ID
+  const url = `https://www.openpowerlifting.org/u/${athleteName}`;
 
   try {
-    const csvFilePath = path.join(__dirname, 'data.csv');
-    const data = await new Promise((resolve, reject) => {
-      const athletes = [];
+    const response = await axios.get(url);
+    const html = response.data;
+    const $ = cheerio.load(html);
 
-      fs.createReadStream(csvFilePath)
-        .pipe(csv())
-        .on('data', (row) => {
-          if (row.Name && row.Name.toLowerCase().includes(name)) {
-            athletes.push(row);
-          }
-        })
-        .on('end', () => {
-          resolve(athletes);
-        })
-        .on('error', (error) => {
-          reject(error);
-        });
-    });
+    // Example: scrape athlete's name, total, DOTS, GL Points from the page
+    const athlete = {
+      name: $('h1').text(), // Extract athlete's name from the header
+      total: $('span:contains("Total")').next().text(), // Example way of scraping the 'Total' value
+      dots: $('span:contains("DOTS")').next().text(),  // Scrape DOTS score
+      weightClass: $('span:contains("Weight Class")').next().text(),  // Scrape Weight Class
+      // Add other relevant information by analyzing the structure of the HTML
+    };
 
     return {
       statusCode: 200,
-      body: JSON.stringify(data),
+      body: JSON.stringify(athlete),
     };
   } catch (error) {
-    console.error('Error reading CSV file:', error);
+    console.error('Error scraping athlete data:', error);
     return {
       statusCode: 500,
-      body: JSON.stringify({ message: 'Error reading CSV file' }),
+      body: JSON.stringify({ message: 'Error scraping athlete data' }),
     };
   }
 };

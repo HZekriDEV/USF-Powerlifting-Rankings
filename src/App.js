@@ -18,9 +18,9 @@ function App() {
         `/.netlify/functions/fetchAthlete?name=${encodeURIComponent(name)}`
       );
       const data = response.data;
-
-      if (data.length > 0) {
-        setAthletes([...athletes, data[0]]);
+  
+      if (data.name) {
+        setAthletes([...athletes, data]);
       } else {
         alert('Athlete not found.');
       }
