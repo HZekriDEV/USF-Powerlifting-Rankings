@@ -1,49 +1,13 @@
-import React, { useState, useEffect } from 'react';
-import axios from 'axios';
-import AthleteList from './components/AthleteList';
-import AthleteSearch from './components/AthleteSearch';
-import Filters from './components/Filters';
+import React from 'react';
+import AddAthlete from './components/AddAthlete';
+import Leaderboard from './components/Leaderboard';
 
 function App() {
-  const [athletes, setAthletes] = useState([]);
-  const [filters, setFilters] = useState({
-    gender: '',
-    weightClass: '',
-    metric: 'total',
-  });
-
-  const addAthlete = async (name) => {
-    try {
-      const response = await axios.get(
-        `/.netlify/functions/fetchAthlete?name=${encodeURIComponent(name)}`
-      );
-      const data = response.data;
-  
-      if (data.name) {
-        setAthletes([...athletes, data]);
-      } else {
-        alert('Athlete not found.');
-      }
-    } catch (error) {
-      console.error('Error fetching athlete data:', error);
-    }
-  };
-
-  const filteredAthletes = athletes
-    .filter((athlete) => {
-      if (filters.gender && athlete.sex !== filters.gender) return false;
-      if (filters.weightClass && athlete.weightClass !== filters.weightClass)
-        return false;
-      return true;
-    })
-    .sort((a, b) => b[filters.metric] - a[filters.metric]);
-
   return (
     <div>
       <h1>Powerlifting Leaderboard</h1>
-      <AthleteSearch addAthlete={addAthlete} />
-      <Filters filters={filters} setFilters={setFilters} />
-      <AthleteList athletes={filteredAthletes} metric={filters.metric} />
+      <AddAthlete />
+      <Leaderboard />
     </div>
   );
 }

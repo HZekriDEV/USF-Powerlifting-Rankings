@@ -1,0 +1,20 @@
+[
+  {
+    "id": 1,
+    "name": "John Doe",
+    "gender": "M",
+    "weightClass": 93,
+    "total": 800,
+    "dots": 500.5,
+    "gl": 100.2
+  },
+  {
+    "id": 2,
+    "name": "Jane Smith",
+    "gender": "F",
+    "weightClass": 63,
+    "total": 600,
+    "dots": 480.3,
+    "gl": 95.6
+  }
+]
