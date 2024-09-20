@@ -1,20 +1,54 @@
-
 <!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Powerlifting Leaderboard</title>
+    <title>USF Powerlifting Leaderboard</title>
     <link rel="stylesheet" href="/static/style.css">
 </head>
 <body>
-    <h1>Powerlifting Leaderboard</h1>
+    <h1>USF Powerlifting Leaderboard</h1>
+    <p class="description">This leaderboard showcases the top lifters at the University of South Florida. The data represents each athlete's best performance in an official competition and is retrieved from Open Powerlifting (www.openpowerlifting.org) and displayed here for easy access.</p>
+    <!-- Sorting and Filtering Form -->
+    <form id="filter-form">
+        <label for="metric">Sort By:</label>
+        <select id="metric" name="metric">
+            <option value="dots">DOTS</option>
+            <option value="total_kg">Total</option>
+        </select>
+    
+        <label for="filter">Filter by Weight Class:</label>
+        <input type="text" id="filter" name="filter" placeholder="Weight Class">
+    
+        <label for="gender">Gender:</label>
+        <select id="gender" name="gender">
+            <option value="both">Both</option>
+            <option value="male">Male</option>
+            <option value="female">Female</option>
+        </select>
+       
+        <button type="submit">Apply</button>
+    </form>
+    
+    
+    <!-- Leaderboard Display -->
+    <div id="leaderboard"></div>
+
+    <!-- Units Selection -->
+    <div class="unit-toggle">
+        <label for="kg" class="toggle-button">
+            <input type="radio" id="kg" name="unit" value="kg" checked> Kilograms
+        </label>
+        <label for="lb" class="toggle-button">
+            <input type="radio" id="lb" name="unit" value="lb"> Pounds
+        </label>
+    </div>
+
+    <!-- Form to add athlete -->
     <form id="add-athlete-form">
         <input type="text" id="athlete-name" placeholder="Athlete Name" required>
         <button type="submit">Add Athlete</button>
     </form>
-    
-    <div id="leaderboard"></div>
 
     <script src="/static/app.js"></script>
 </body>
