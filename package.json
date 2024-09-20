@@ -5,7 +5,10 @@
   "description": "A simple web application to display a leaderboard of powerlifting athletes using Open Powerlifting data.",
   "main": "server.js",
   "scripts": {
-    "start": "node server.js"
+    "start": "react-scripts start",
+    "build": "react-scripts build",
+    "test": "react-scripts test",
+    "eject": "react-scripts eject"
   },
   "dependencies": {
     "axios": "^0.21.1",
