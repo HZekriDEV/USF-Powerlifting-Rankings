@@ -9,7 +9,7 @@ from psycopg2 import sql
 
 app = Flask(__name__)
 
-DATABASE = 'postgresql://postgres:DHeWxOQEeZzckorexvdUNxnwqvotJFWk@junction.proxy.rlwy.net:48631/railway'
+DATABASE = 'postgres://avnadmin:AVNS_bOpJOYVrHmAIEZj30-L@usfpldata-kimozekri-ffda.k.aivencloud.com:15841/defaultdb?sslmode=require'
 KG_TO_LB = 2.20462 
 
 def init_db():
