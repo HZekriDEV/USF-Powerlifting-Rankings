@@ -4,20 +4,22 @@ from bs4 import BeautifulSoup
 import sqlite3
 import pandas as pd
 from io import StringIO
+import psycopg2
+from psycopg2 import sql
 
 app = Flask(__name__)
 
-DATABASE = 'athletes.db'
+DATABASE = 'postgresql://postgres:DHeWxOQEeZzckorexvdUNxnwqvotJFWk@junction.proxy.rlwy.net:48631/railway'
 KG_TO_LB = 2.20462 
 
 def init_db():
-    conn = sqlite3.connect(DATABASE)
+    conn = psycopg2.connect(DATABASE)
     cursor = conn.cursor()
     
     # Updated table schema with all the new columns
     cursor.execute('''
         CREATE TABLE IF NOT EXISTS athletes (
-            id INTEGER PRIMARY KEY,
+            id SERIAL PRIMARY KEY,
             name TEXT,
             sex TEXT,
             event TEXT,
@@ -77,7 +79,7 @@ def scrape_athlete_data(athlete_name):
         soup = BeautifulSoup(response.content, 'html.parser')
         
         # Find the link to the CSV file
-        csv_link_tag = soup.find('a', href=True, text='Download as CSV')
+        csv_link_tag = soup.find('a', href=True, string='Download as CSV')
         
         if csv_link_tag:
             # Build the full CSV URL
@@ -108,7 +110,7 @@ def leaderboard():
     gender = request.args.get('gender', 'both')  # Get the gender filter, default to 'both'
     unit = request.args.get('unit', 'kg')
 
-    conn = sqlite3.connect(DATABASE)
+    conn = psycopg2.connect(DATABASE)
     cursor = conn.cursor()
 
     query = '''
@@ -119,20 +121,20 @@ def leaderboard():
     params = []
 
     if gender == 'male':
-        conditions.append('sex = ?')
+        conditions.append('sex = %s')
         params.append('M')
     elif gender == 'female':
-        conditions.append('sex = ?')
+        conditions.append('sex = %s')
         params.append('F')
 
     if filter_value:
-        conditions.append('weight_class_kg = ?')
+        conditions.append('weight_class_kg = %s')
         params.append(filter_value)
 
     if conditions:
         query += ' WHERE ' + ' AND '.join(conditions)
 
-    query += f' GROUP BY name ORDER BY {metric} DESC'
+    query += f' GROUP BY id, name, weight_class_kg, dots ORDER BY {metric} DESC'
     
     cursor.execute(query, params)
     athletes = cursor.fetchall()
@@ -153,35 +155,36 @@ def add_athlete():
     athlete_data = scrape_athlete_data(name)
     
     if athlete_data is not None:
-        conn = sqlite3.connect(DATABASE)
+        conn = psycopg2.connect(DATABASE)
         cursor = conn.cursor()
         
         # Iterating over the DataFrame rows and inserting into the database
         for index, row in athlete_data.iterrows():
-            cursor.execute("""
-                INSERT INTO athletes (
-                    name, sex, event, equipment, age, age_class, birth_year_class,
-                    division, bodyweight_kg, weight_class_kg, squat1_kg, squat2_kg,
-                    squat3_kg, squat4_kg, best3_squat_kg, bench1_kg, bench2_kg,
-                    bench3_kg, bench4_kg, best3_bench_kg, deadlift1_kg, deadlift2_kg,
-                    deadlift3_kg, deadlift4_kg, best3_deadlift_kg, total_kg, place,
-                    dots, wilks, glossbrenner, goodlift, tested, country, state,
-                    federation, parent_federation, date, meet_country, meet_state,
-                    meet_town, meet_name, sanctioned
-                ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
-            """, (
-                row['Name'], row['Sex'], row['Event'], row['Equipment'], row['Age'],
-                row['AgeClass'], row['BirthYearClass'], row['Division'], row['BodyweightKg'],
-                row['WeightClassKg'], row['Squat1Kg'], row['Squat2Kg'], row['Squat3Kg'], 
-                row['Squat4Kg'], row['Best3SquatKg'], row['Bench1Kg'], row['Bench2Kg'],
-                row['Bench3Kg'], row['Bench4Kg'], row['Best3BenchKg'], row['Deadlift1Kg'], 
-                row['Deadlift2Kg'], row['Deadlift3Kg'], row['Deadlift4Kg'], 
-                row['Best3DeadliftKg'], row['TotalKg'], row['Place'], row['Dots'], 
-                row['Wilks'], row['Glossbrenner'], row['Goodlift'], row['Tested'], 
-                row['Country'], row['State'], row['Federation'], row['ParentFederation'], 
-                row['Date'], row['MeetCountry'], row['MeetState'], row['MeetTown'], 
-                row['MeetName'], row['Sanctioned']
-            ))
+            if row.equals(athlete_data.loc[athlete_data['TotalKg'].idxmax()]):
+                cursor.execute("""
+                    INSERT INTO athletes (
+                        name, sex, event, equipment, age, age_class, birth_year_class,
+                        division, bodyweight_kg, weight_class_kg, squat1_kg, squat2_kg,
+                        squat3_kg, squat4_kg, best3_squat_kg, bench1_kg, bench2_kg,
+                        bench3_kg, bench4_kg, best3_bench_kg, deadlift1_kg, deadlift2_kg,
+                        deadlift3_kg, deadlift4_kg, best3_deadlift_kg, total_kg, place,
+                        dots, wilks, glossbrenner, goodlift, tested, country, state,
+                        federation, parent_federation, date, meet_country, meet_state,
+                        meet_town, meet_name, sanctioned
+                    ) VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s)
+                """, (
+                    row['Name'], row['Sex'], row['Event'], row['Equipment'], row['Age'],
+                    row['AgeClass'], row['BirthYearClass'], row['Division'], row['BodyweightKg'],
+                    row['WeightClassKg'], row['Squat1Kg'], row['Squat2Kg'], row['Squat3Kg'], 
+                    row['Squat4Kg'], row['Best3SquatKg'], row['Bench1Kg'], row['Bench2Kg'],
+                    row['Bench3Kg'], row['Bench4Kg'], row['Best3BenchKg'], row['Deadlift1Kg'], 
+                    row['Deadlift2Kg'], row['Deadlift3Kg'], row['Deadlift4Kg'], 
+                    row['Best3DeadliftKg'], row['TotalKg'], row['Place'], row['Dots'], 
+                    row['Wilks'], row['Glossbrenner'], row['Goodlift'], row['Tested'], 
+                    row['Country'], row['State'], row['Federation'], row['ParentFederation'], 
+                    row['Date'], row['MeetCountry'], row['MeetState'], row['MeetTown'], 
+                    row['MeetName'], row['Sanctioned']
+                ))
         
         conn.commit()
         conn.close()
@@ -197,9 +200,9 @@ def update_weight_class():
     new_weight_class = data.get('weight_class_kg')
 
     if athlete_id is not None and new_weight_class is not None:
-        conn = sqlite3.connect(DATABASE)
+        conn = psycopg2.connect(DATABASE)
         cursor = conn.cursor()
-        cursor.execute("UPDATE athletes SET weight_class_kg = ? WHERE id = ?", (new_weight_class, athlete_id))
+        cursor.execute("UPDATE athletes SET weight_class_kg = %s WHERE id = %s", (new_weight_class, athlete_id))
         conn.commit()
         conn.close()
         return jsonify({'message': 'Weight class updated successfully!'}), 200
@@ -210,9 +213,9 @@ def remove_athlete():
     data = request.json
     athlete_name = data.get('name')
     
-    conn = sqlite3.connect(DATABASE)
+    conn = psycopg2.connect(DATABASE)
     cursor = conn.cursor()
-    cursor.execute("DELETE FROM athletes WHERE name = ?", (athlete_name,))
+    cursor.execute("DELETE FROM athletes WHERE name = %s", (athlete_name,))
     conn.commit()
     conn.close()
     return jsonify({'message': f'{athlete_name} removed successfully!'}), 200
