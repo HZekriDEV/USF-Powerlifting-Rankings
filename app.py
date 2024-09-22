@@ -175,7 +175,7 @@ def add_athlete():
                 """, (
                     row['Name'], row['Sex'], row['Event'], row['Equipment'], row['Age'],
                     row['AgeClass'], row['BirthYearClass'], row['Division'], row['BodyweightKg'],
-                    row['WeightClassKg'], row['Squat1Kg'], row['Squat2Kg'], row['Squat3Kg'], 
+                    row['WeightClassKg'] if pd.notna(row['WeightClassKg']) else 0, row['Squat1Kg'], row['Squat2Kg'], row['Squat3Kg'], 
                     row['Squat4Kg'], row['Best3SquatKg'], row['Bench1Kg'], row['Bench2Kg'],
                     row['Bench3Kg'], row['Bench4Kg'], row['Best3BenchKg'], row['Deadlift1Kg'], 
                     row['Deadlift2Kg'], row['Deadlift3Kg'], row['Deadlift4Kg'], 
@@ -219,6 +219,40 @@ def remove_athlete():
     conn.commit()
     conn.close()
     return jsonify({'message': f'{athlete_name} removed successfully!'}), 200
+
+def truncate_all_tables():
+    try:
+        # Connect to your Aiven PostgreSQL database
+        conn = psycopg2.connect(DATABASE)
+        cursor = conn.cursor()
+
+        # Get the list of all tables in the current schema
+        cursor.execute("""
+            SELECT table_name 
+            FROM information_schema.tables 
+            WHERE table_schema = 'public';
+        """)
+        
+        tables = cursor.fetchall()
+        
+        # Loop through each table and truncate it
+        for table in tables:
+            print(f"Truncating table {table[0]}...")
+            cursor.execute(f"TRUNCATE TABLE {table[0]} CASCADE;")
+    
+        
+        # Commit the transaction
+        conn.commit()
+        print("All tables truncated successfully!")
+
+    except Exception as e:
+        print(f"Error occurred: {e}")
+        conn.rollback()
+
+    finally:
+        if conn:
+            cursor.close()
+            conn.close()
 
 
 if __name__ == '__main__':
