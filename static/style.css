@@ -179,8 +179,8 @@ button:hover {
     display: none; 
     position: fixed;
     z-index: 10; /* Ensure the modal is above other content */
-    left: 0%;
-    top: 0%;
+    left: 25%;
+    top: 25%;
     width: 100vw;
     height: 100vh;
     background-color: rgba(0, 0, 0, 0.0); /* Semi-transparent background for outside click prevention */
