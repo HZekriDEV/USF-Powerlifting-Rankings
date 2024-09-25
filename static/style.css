@@ -231,14 +231,6 @@ button:hover {
     color: #000;
 }
 
-/* For better mobile responsiveness */
-@media (max-width: 600px) {
-    .modal-content {
-        width: 90%; /* Full width on smaller screens */
-        max-width: none;
-    }
-}
-
 #add-prs-form {
     display: flex;
     flex-direction: column;
