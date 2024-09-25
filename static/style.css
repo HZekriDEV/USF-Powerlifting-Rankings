@@ -193,7 +193,7 @@ button:hover {
 
 /* Draggable Modal Box */
 .modal-content {
-    position: absolute; /* Ensure it can move */
+    position: relative; /* Ensure it can move */
     background-color: #f1f1f1; /* Same background as header */
     padding: 20px;
     border-radius: 5px; /* Rounded corners */
@@ -320,7 +320,7 @@ input[type="number"] {
     }
 
     .modal-content {
-        width: 90vw;
+        width: 300vw;
         height: auto;
         padding: 15px;
     }
