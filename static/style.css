@@ -1,49 +1,76 @@
-body {
-    font-family: 'Trade Gothic', sans-serif;
-        background-color: #fdfdfd;
-    text-align: center;
-    color: #333;
+/* Title Image */
+.title-image {
+    max-width: 750px;
+    height: auto;
+    margin: 0 auto;
+    display: block;
+    box-shadow: 0px 4px 15px rgba(0, 0, 0, 0.1); /* Add subtle shadow for depth */
+    border-radius: 10px; /* Rounded corners for a softer look */
 }
 
+/* Body Styling */
+body {
+    font-family: 'Trade Gothic', sans-serif;
+    background-color: #fdfdfd;
+    text-align: center;
+    color: #333;
+    line-height: 1.6; /* Improves readability */
+}
+
+/* Headings */
 h1 {
     font-size: 2.5em;
     color: #006747;
     margin-bottom: 20px;
+    font-weight: bold; /* Make the title bold */
+    text-transform: uppercase; /* For a modern touch */
+    letter-spacing: 1px; /* Slight spacing between letters for style */
 }
 
+/* Description Styling */
 .description {
     font-size: 1.2em;
     color: #666;
-    margin: 0 auto;  /* Center the description */
-    width: 60%;      /* Limit the width to 60% of the page */
-    text-align: center;  /* Center the text inside the description box */
-    margin-top: -10px;  /* Optional: adjust spacing */
+    margin: 0 auto;
+    width: 60%;
+    text-align: center;
+    margin-top: 10px;
     margin-bottom: 20px;
+    line-height: 1.8; /* Slightly increase spacing between lines */
 }
 
+/* Form Styling */
 form {
     margin-bottom: 20px;
-    padding: 10px;
+    padding: 15px; /* Increased padding for form fields */
+    background-color: #f9f9f9; /* Light background for contrast */
+    border-radius: 10px; /* Rounded corners */
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05); /* Subtle shadow for depth */
 }
 
+/* Table Styling */
 table {
     width: 90%;
     margin: 20px auto;
     border-collapse: collapse;
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+    border-radius: 10px; /* Rounded corners on tables */
+    overflow: hidden; /* Prevent overflow of rounded corners */
 }
 
+/* Links */
 a {
-    color: #005a51;  /* Customize this to your preferred link color */
+    color: #005a51;
     text-decoration: none;
+    transition: color 0.2s ease-in-out; /* Smooth transition */
 }
 
 a:hover {
     text-decoration: underline;
-    color: #00695c;  /* Customize the hover effect */
+    color: #00695c;
 }
 
-
+/* Table Data and Header Styling */
 th, td {
     padding: 12px 15px;
     border: 1px solid #ccc;
@@ -53,40 +80,45 @@ th, td {
 th {
     background-color: #006747;
     color: white;
+    font-weight: bold;
 }
 
 td {
     background-color: #e7fff0;
 }
 
+/* Button Styling */
 button {
     background-color: #CFC493;
-    color: rgb(0, 0, 0);
+    color: #000;
     border: none;
-    border-radius: 25px;
-    padding: 8px 12px;
+    border-radius: 5px;
+    padding: 10px 15px; /* Slightly larger padding for emphasis */
     cursor: pointer;
     font-size: 1em;
+    transition: all 0.3s ease; /* Smoother transition effect */
 }
 
 button:hover {
-    background-color: #CFC493;
+    background-color: #b5a982;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1); /* Hover shadow */
 }
 
-.weight-class-input {
-    width: 100px;
-    padding: 5px;
+/* Input Field and Select Styling */
+.weight-class-input, select {
+    padding: 10px;
     font-size: 1em;
     text-align: center;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    transition: border-color 0.2s ease-in-out;
 }
 
-select {
-    padding: 5px;
-    margin-right: 10px;
-    font-size: 1em;
+.weight-class-input:focus, select:focus {
+    border-color: #006747; /* Focus border color for input fields */
 }
 
-
+/* Unit Toggle Buttons */
 .unit-toggle {
     display: inline-flex;
     margin-top: 10px;
@@ -104,7 +136,7 @@ select {
 }
 
 .toggle-button input {
-    display: none;  /* Hide the default radio button */
+    display: none; /* Hide the default radio button */
 }
 
 .toggle-button input:checked + label, .toggle-button input:checked {
@@ -113,24 +145,140 @@ select {
 }
 
 .toggle-button:hover {
-    background-color: #CFC493;
+    background-color: #b5a982;
 }
 
+/* Add Athlete Form Styling */
 #add-athlete-form {
     display: flex;
     flex-direction: column;
     align-items: center;
-    margin-top: 20px;  /* Optional: add some space at the top */
+    margin-top: 20px;
 }
 
-#add-athlete-form input,
-#add-athlete-form button {
-    width: 100%;  /* You can adjust this as needed */
-    max-width: 300px;  /* Set a maximum width for the input and button */
-    margin-bottom: 10px;  /* Add spacing between the input and the button */
-    text-align: center;  /* Ensure the text inside the input is centered */
+#add-athlete-form input, #add-athlete-form button {
+    width: 100%;
+    max-width: 300px;
+    margin-bottom: 10px;
+    text-align: center;
+    padding: 10px; /* Padding for input and buttons */
+    border-radius: 10px;
 }
 
-#add-athlete-form button {
+#add-athlete-form input {
+    border: 1px solid #ccc;
+    transition: border-color 0.2s ease-in-out;
+}
+
+#add-athlete-form input:focus {
+    border-color: #006747; /* Focus border for inputs */
+}
+
+/* Modal styling */
+.modal {
+    display: none; 
+    position: fixed;
+    z-index: 10; /* Ensure the modal is above other content */
+    left: 50%;
+    top: 50%;
+    width: 100vw;
+    height: 100vh;
+    background-color: rgba(0, 0, 0, 0.0); /* Semi-transparent background for outside click prevention */
+    justify-content: center; /* Center modal horizontally */
+    align-items: center; /* Center modal vertically */
+    pointer-events: auto; /* Enable interaction inside the modal */
+}
+
+/* Draggable Modal Box */
+.modal-content {
+    position: absolute; /* Ensure it can move */
+    background-color: #f1f1f1; /* Same background as header */
+    padding: 20px;
+    border-radius: 5px; /* Rounded corners */
+    width: auto; /* Allow the size to be determined by content */
+    max-width: 90vw; /* Prevent it from getting too wide */
+    max-height: 90vh; /* Prevent overflow outside screen */
+    overflow-y: auto; /* Add scroll if content is too long */
+    cursor: default; /* Regular cursor inside the modal */
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1); /* Subtle shadow */
+    pointer-events: auto; /* Allow interaction with the modal */
+    margin-top: 1px;
+}
+
+/* Draggable Modal Header */
+.modal-header {
+    cursor: move;
+    padding: 1px;
+    background-color: #f1f1f1; /* Same background color as content */
+    color: rgb(37, 37, 37);
+    border-radius: 5px 1px 0 0; /* Rounded top corners */
+    font-weight: bold; /* Make header text bold */
+    margin-bottom: 1px;
+}
+
+/* Close Button */
+.modal .close {
+    position: absolute;
+    top: 10px;
+    right: 10px;
+    font-size: 20px;
+    font-weight: bold;
+    color: #333;
     cursor: pointer;
+}
+
+.modal .close:hover {
+    color: #000;
+}
+
+/* For better mobile responsiveness */
+@media (max-width: 600px) {
+    .modal-content {
+        width: 90%; /* Full width on smaller screens */
+        max-width: none;
+    }
+}
+
+#add-prs-form {
+    display: flex;
+    flex-direction: column;
+    gap: 15px; /* Space between rows */
+}
+
+.row {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 10px; /* Space between inputs */
+}
+
+label {
+    width: 150px; /* Set a fixed width for labels */
+}
+
+input[type="number"] {
+    width: 80px; /* Set width for input fields */
+}
+
+
+#add-prs-form input {
+    margin-bottom: 10px;
+    padding: 10px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    font-size: 1em;
+}
+
+#add-prs-form button {
+    padding: 10px;
+    background-color: #006747;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: 1em;
+}
+
+#add-prs-form button:hover {
+    background-color: #004f34;
 }

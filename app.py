@@ -148,7 +148,6 @@ def leaderboard():
     
     return jsonify(athletes)
 
-
 @app.route('/add_athlete', methods=['POST'])
 def add_athlete():
     name = request.json.get('name')
@@ -173,17 +172,24 @@ def add_athlete():
                         meet_town, meet_name, sanctioned
                     ) VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s)
                 """, (
-                    row['Name'], row['Sex'], row['Event'], row['Equipment'], row['Age'],
+                     row['Name'], row['Sex'], row['Event'], row['Equipment'], row['Age'],
                     row['AgeClass'], row['BirthYearClass'], row['Division'], row['BodyweightKg'],
-                    row['WeightClassKg'] if pd.notna(row['WeightClassKg']) else 0, row['Squat1Kg'], row['Squat2Kg'], row['Squat3Kg'], 
-                    row['Squat4Kg'], row['Best3SquatKg'], row['Bench1Kg'], row['Bench2Kg'],
-                    row['Bench3Kg'], row['Bench4Kg'], row['Best3BenchKg'], row['Deadlift1Kg'], 
-                    row['Deadlift2Kg'], row['Deadlift3Kg'], row['Deadlift4Kg'], 
-                    row['Best3DeadliftKg'], row['TotalKg'], row['Place'], row['Dots'], 
-                    row['Wilks'], row['Glossbrenner'], row['Goodlift'], row['Tested'], 
-                    row['Country'], row['State'], row['Federation'], row['ParentFederation'], 
-                    row['Date'], row['MeetCountry'], row['MeetState'], row['MeetTown'], 
-                    row['MeetName'], row['Sanctioned']
+                    row['WeightClassKg'] if pd.notna(row['WeightClassKg']) else 0,
+                    0,0,0,0,
+                    row['Best3SquatKg'] if pd.notna(row['Best3SquatKg']) else 0,
+                    0,0,0,0,
+                    row['Best3BenchKg'] if pd.notna(row['Best3BenchKg']) else 0,
+                    0,0,0,0,
+                    row['Best3DeadliftKg'] if pd.notna(row['Best3DeadliftKg']) else 0,
+                    row['TotalKg'] if pd.notna(row['TotalKg']) else 0,
+                    row['Place'] if pd.notna(row['Place']) else 0,
+                    row['Dots'] if pd.notna(row['Dots']) else 0,
+                    row['Wilks'] if pd.notna(row['Wilks']) else 0,
+                    row['Glossbrenner'] if pd.notna(row['Glossbrenner']) else 0,
+                    row['Goodlift'] if pd.notna(row['Goodlift']) else 0,
+                    row['Tested'], row['Country'], row['State'], row['Federation'], 
+                    row['ParentFederation'], row['Date'], row['MeetCountry'], row['MeetState'], 
+                    row['MeetTown'], row['MeetName'], row['Sanctioned']
                 ))
         
         conn.commit()
@@ -191,7 +197,6 @@ def add_athlete():
         return jsonify({'message': 'Athlete added successfully!'}), 200
     
     return jsonify({'error': 'Athlete not found'}), 404
-
 
 @app.route('/update_weight_class', methods=['POST'])
 def update_weight_class():
@@ -219,6 +224,73 @@ def remove_athlete():
     conn.commit()
     conn.close()
     return jsonify({'message': f'{athlete_name} removed successfully!'}), 200
+
+@app.route('/add_prs', methods=['POST'])
+def add_prs():
+    data = request.json
+    athlete_name = request.args.get('athlete')
+    
+    # Extract PRs data
+    squat4 = data.get('squat4')
+    bench4 = data.get('bench4')
+    deadlift4 = data.get('deadlift4')
+    squat3 = data.get('squat3')
+    bench3 = data.get('bench3')
+    deadlift3 = data.get('deadlift3')
+    squat2 = data.get('squat2')
+    bench2 = data.get('bench2')
+    deadlift2 = data.get('deadlift2')
+    squat1 = data.get('squat1')
+    bench1 = data.get('bench1')
+    deadlift1 = data.get('deadlift1')
+    
+    # Connect to the database
+    conn = psycopg2.connect(DATABASE)
+    cursor = conn.cursor()
+
+    # Update the athlete's PRs in the database
+    cursor.execute('''
+        UPDATE athletes SET
+        squat4_kg = %s, bench4_kg = %s, deadlift4_kg = %s,
+        squat3_kg = %s, bench3_kg = %s, deadlift3_kg = %s,
+        squat2_kg = %s, bench2_kg = %s, deadlift2_kg = %s,
+        squat1_kg = %s, bench1_kg = %s, deadlift1_kg = %s
+        WHERE name = %s
+    ''', (squat4, bench4, deadlift4, squat3, bench3, deadlift3, squat2, bench2, deadlift2, squat1, bench1, deadlift1, athlete_name))
+    
+    conn.commit()
+    conn.close()
+    
+    return jsonify({'message': 'PRs updated successfully!'}), 200
+
+
+
+
+@app.route('/get_athlete_prs', methods=['GET'])
+def get_athlete_prs():
+    athlete_name = request.args.get('athlete')
+    
+    conn = psycopg2.connect(DATABASE)
+    cursor = conn.cursor()
+    
+    cursor.execute('''
+        SELECT squat4_kg, bench4_kg, deadlift4_kg, squat3_kg, bench3_kg, deadlift3_kg, 
+        squat2_kg, bench2_kg, deadlift2_kg, squat1_kg, bench1_kg, deadlift1_kg 
+        FROM athletes WHERE name = %s
+    ''', (athlete_name,))
+    
+    prs = cursor.fetchone()
+    conn.close()
+
+    if prs:
+        return jsonify({
+            'squat4': prs[0], 'bench4': prs[1], 'deadlift4': prs[2],
+            'squat3': prs[3], 'bench3': prs[4], 'deadlift3': prs[5],
+            'squat2': prs[6], 'bench2': prs[7], 'deadlift2': prs[8],
+            'squat1': prs[9], 'bench1': prs[10], 'deadlift1': prs[11]
+        }), 200
+    else:
+        return jsonify({'error': 'PRs not found'}), 404
 
 def truncate_all_tables():
     try:

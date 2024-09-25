@@ -6,10 +6,14 @@
     <title>USF Powerlifting Leaderboard</title>
     <link rel="stylesheet" href="/static/style.css">
     <link rel="icon" href="/static/favicon.jpg" type="image/jpg">
+    <!-- Chart.js for the graph -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 </head>
 <body>
-    <h1>USF Powerlifting Leaderboard</h1>
+    <img src="/static/POWERLIFTING CLUB_USF Green.jpg" alt="USF Powerlifting Leaderboard" class="title-image">
+    <h1>Leaderboard</h1>
     <p class="description">This leaderboard showcases the top lifters at the University of South Florida. The data represents each athlete's best performance in an official competition and is retrieved from Open Powerlifting (www.openpowerlifting.org) and displayed here for easy access.</p>
+
     <!-- Sorting and Filtering Form -->
     <form id="filter-form">
         <label for="metric">Sort By:</label>
@@ -17,20 +21,19 @@
             <option value="dots">DOTS</option>
             <option value="total_kg">Total</option>
         </select>
-    
+
         <label for="filter">Filter by Weight Class:</label>
         <input type="text" id="filter" name="filter" placeholder="Weight Class">
-    
+
         <label for="gender">Gender:</label>
         <select id="gender" name="gender">
             <option value="both">Both</option>
             <option value="male">Male</option>
             <option value="female">Female</option>
         </select>
-       
+
         <button type="submit">Apply</button>
     </form>
-    
     
     <!-- Leaderboard Display -->
     <div id="leaderboard"></div>
@@ -50,6 +53,39 @@
         <input type="text" id="athlete-name" placeholder="Athlete Name" required>
         <button type="submit">Add Athlete</button>
     </form>
+
+    <p class="version">Release 1.1.0</p>
+
+
+    <!-- PR Table/Graph Modal (Initially Hidden) -->
+    <div id="prTableGraphModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <span class="close close-pr-table-graph">&times;</span>
+                <h2>PR Board</h2>
+            </div>
+            <!-- PR Table -->
+            <div id="pr-table">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Lift</th>
+                            <th>Best Set of 4</th>
+                            <th>Best Set of 3</th>
+                            <th>Best Set of 2</th>
+                            <th>Best Set of 1</th>
+                        </tr>
+                    </thead>
+                    <tbody id="pr-data">
+                        <!-- Data will be dynamically inserted here -->
+                    </tbody>
+                </table>
+            </div>
+            <p class="info">This is a handy graph to illustrate the correlations between their strengths at each rep range.</p>
+            <!-- PR Graph -->
+            <canvas id="prChart" width="500" height="300"></canvas>
+        </div>
+    </div>
 
     <script src="/static/app.js"></script>
 </body>
