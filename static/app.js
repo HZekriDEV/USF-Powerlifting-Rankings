@@ -60,7 +60,6 @@ document.getElementById('filter-form').addEventListener('submit', async function
     });
     leaderboard += '</table>';
     document.getElementById('leaderboard').innerHTML = leaderboard;
-    //loadLeaderboard()
 });
 
 

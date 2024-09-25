@@ -46,6 +46,7 @@ form {
     background-color: #f9f9f9; /* Light background for contrast */
     border-radius: 10px; /* Rounded corners */
     box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05); /* Subtle shadow for depth */
+    align-items: center;
 }
 
 /* Table Styling */
@@ -56,6 +57,7 @@ table {
     box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
     border-radius: 10px; /* Rounded corners on tables */
     overflow: hidden; /* Prevent overflow of rounded corners */
+    align-items: center;
 }
 
 /* Links */
@@ -195,9 +197,9 @@ button:hover {
     background-color: #f1f1f1; /* Same background as header */
     padding: 20px;
     border-radius: 5px; /* Rounded corners */
-    width: auto; /* Allow the size to be determined by content */
-    max-width: 90vw; /* Prevent it from getting too wide */
-    max-height: 90vh; /* Prevent overflow outside screen */
+    width: 90vw; /* Allow the size to be determined by content */
+    max-width: 50vw; /* Prevent it from getting too wide */
+    max-height: 150vh; /* Prevent overflow outside screen */
     overflow-y: auto; /* Add scroll if content is too long */
     cursor: default; /* Regular cursor inside the modal */
     box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1); /* Subtle shadow */
