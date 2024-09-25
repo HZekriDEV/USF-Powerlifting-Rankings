@@ -198,7 +198,7 @@ button:hover {
     padding: 20px;
     border-radius: 5px; /* Rounded corners */
     width: 90vw; /* Allow the size to be determined by content */
-    max-width: 200vw; /* Prevent it from getting too wide */
+    max-width: 300vw; /* Prevent it from getting too wide */
     max-height: 150vh; /* Prevent overflow outside screen */
     overflow-y: auto; /* Add scroll if content is too long */
     cursor: default; /* Regular cursor inside the modal */
@@ -275,4 +275,53 @@ input[type="number"] {
 
 #add-prs-form button:hover {
     background-color: #004f34;
+}
+
+@media only screen and (max-width: 768px) {
+    body {
+        padding: 0 10px; /* Add padding to avoid edges touching screen */
+    }
+
+    h1 {
+        font-size: 2em; /* Reduce size of heading */
+        margin-bottom: 15px;
+    }
+
+    .description {
+        font-size: 1em; /* Adjust font size for better readability on smaller screens */
+        width: 100%; /* Ensure the description spans the full width on mobile */
+    }
+
+    form {
+        width: 100%;
+        padding: 10px;
+    }
+
+    table {
+        width: 100%;
+    }
+
+    th, td {
+        font-size: 0.9em; /* Smaller text size in tables */
+        padding: 8px;
+    }
+
+    button {
+        font-size: 0.9em; /* Smaller buttons on mobile */
+        padding: 8px 10px;
+    }
+
+    .toggle-button {
+        padding: 8px 15px; /* Adjust padding for smaller screen space */
+    }
+
+    #add-athlete-form input {
+        max-width: 90%; /* Keep the input field within mobile screen width */
+    }
+
+    .modal-content {
+        width: 90vw;
+        height: auto;
+        padding: 15px;
+    }
 }
