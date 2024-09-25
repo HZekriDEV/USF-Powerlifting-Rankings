@@ -198,7 +198,7 @@ button:hover {
     padding: 20px;
     border-radius: 5px; /* Rounded corners */
     width: 90vw; /* Allow the size to be determined by content */
-    max-width: 50vw; /* Prevent it from getting too wide */
+    max-width: 200vw; /* Prevent it from getting too wide */
     max-height: 150vh; /* Prevent overflow outside screen */
     overflow-y: auto; /* Add scroll if content is too long */
     cursor: default; /* Regular cursor inside the modal */
