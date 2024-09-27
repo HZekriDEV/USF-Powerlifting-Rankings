@@ -47,7 +47,7 @@ document.getElementById('filter-form').addEventListener('submit', async function
 
     let leaderboard = '<table><tr><th>Name</th><th>Weight Class</th><th>Total</th><th>DOTS</th><th>Actions</th></tr>';
     athletes.forEach(athlete => {
-        const normalizedAthleteName = athlete[1].toLowerCase().replace(" ", "");
+        const normalizedAthleteName = athlete[1].toLowerCase().replace("#", "").replace(" ", "").replace(" ", "");
         const openPowerliftingURL = `https://www.openpowerlifting.org/u/${normalizedAthleteName}`;
         leaderboard += `<tr><td><a href="${openPowerliftingURL}" target="_blank">${athlete[1]}</a></td>
                             <td>${athlete[2]}</td>
@@ -94,7 +94,7 @@ async function loadLeaderboard() {
     let leaderboard = '<table><tr><th>Name</th><th>Weight Class</th><th>Total</th><th>DOTS</th><th>Actions</th></tr>';
     athletes.forEach(athlete => {
         // Ensure name links to OpenPowerlifting
-        const normalizedAthleteName = athlete[1].toLowerCase().replace(" ", "");
+        const normalizedAthleteName = athlete[1].toLowerCase().replace("#", "").replace(" ", "").replace(" ", "");
         const openPowerliftingURL = `https://www.openpowerlifting.org/u/${normalizedAthleteName}`;
         
         // Render input if weight class is missing, otherwise display the weight class
@@ -149,7 +149,6 @@ document.addEventListener('click', async function (e) {
     if (e.target.classList.contains('add-prs-btn')) {
         const row = e.target.closest('tr');
         athleteName = row.children[0].innerText;
-
         const prs = await loadAthletePRs(athleteName);
 
         // Show Combined PR Table/Graph Modal
@@ -168,6 +167,7 @@ document.addEventListener('click', async function (e) {
 });
 
 async function loadAthletePRs(athleteName) {
+    console.log(athleteName);
     const response = await fetch(`/get_athlete_prs?athlete=${athleteName}`);
     if (!response.ok) {
         console.error("Failed to load PR data for athlete:", athleteName);
