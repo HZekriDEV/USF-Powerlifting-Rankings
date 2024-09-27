@@ -167,8 +167,7 @@ document.addEventListener('click', async function (e) {
 });
 
 async function loadAthletePRs(athleteName) {
-    console.log(athleteName);
-    const response = await fetch(`/get_athlete_prs?athlete=${athleteName}`);
+    const response = await fetch(`/get_athlete_prs?athlete=${encodeURIComponent(athleteName)}`);
     if (!response.ok) {
         console.error("Failed to load PR data for athlete:", athleteName);
         return;
