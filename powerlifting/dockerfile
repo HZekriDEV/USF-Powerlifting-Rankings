@@ -1,0 +1,22 @@
+# Command: docker run -p <set port>:80 powerlifting frontend
+# See on localhost:<set_port>
+
+# Build stage: builds your Vite app
+# Specify image used for dockerfile
+FROM node:20-alpine as build 
+# Specify working directory
+WORKDIR /app
+# Copy dependencies
+COPY package*.json ./
+# Install dependencies
+RUN npm install
+# Copy all code
+COPY . .
+# Build project and create static directory /dist
+RUN npm run build
+
+# Serve stage: static file server using nginx
+FROM nginx:stable-alpine as production
+COPY --from=build /app/dist /usr/share/nginx/html
+EXPOSE 80
+CMD ["nginx", "-g", "daemon off;"]
