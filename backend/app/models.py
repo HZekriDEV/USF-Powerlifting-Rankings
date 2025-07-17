@@ -7,6 +7,23 @@ from datetime import datetime, timezone
 '''
 
 
+# This could be expanded to fit the needs of your application. For example,
+# it could track who revoked a JWT, when a token expires, notes for why a
+# JWT was revoked, an endpoint to un-revoked a JWT, etc.
+# Making jti an index can significantly speed up the search when there are
+# tens of thousands of records. Remember this query will happen for every
+# (protected) request,
+# If your database supports a UUID type, this can be used for the jti column
+# as well
+class TokenBlocklist(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    jti = db.Column(db.String(36), nullable=False, index=True)
+    created_at = db.Column(db.DateTime, nullable=False)
+    token_type = db.Column(db.String(16), nullable=False)
+    created_at = db.Column(
+        db.DateTime, default=lambda: datetime.now(timezone.utc))
+
+
 '''User Model, contains user account information and authorize login'''
 
 
@@ -14,6 +31,8 @@ class User(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     email = db.Column(db.String(120), unique=True, nullable=False)
     _password_hash = db.Column(db.String(120), nullable=False)
+    first_name = db.Column(db.String(80), nullable=False)
+    last_name = db.Column(db.String(80), nullable=False)
     is_officer = db.Column(db.Boolean, nullable=False)
     time_created = db.Column(
         db.DateTime, default=lambda: datetime.now(timezone.utc))
@@ -41,7 +60,6 @@ class Officer(db.Model):
     id = db.Column(db.Integer, db.ForeignKey("user.id"), primary_key=True)
     user = db.relationship(
         "User", backref=db.backref("officer", uselist=False))
-    name = db.Column(db.String(80), nullable=False)
     role = db.Column(db.String(80), nullable=False)
     bio = db.Column(db.Text, nullable=False)
     about_role = db.Column(db.Text, nullable=False)
@@ -54,7 +72,6 @@ class Athlete(db.Model):
     id = db.Column(db.Integer, db.ForeignKey("user.id"), primary_key=True)
     user = db.relationship(
         "User", backref=db.backref("athlete", uselist=False))
-    name = db.Column(db.String(80), nullable=False)
     gender = db.Column(db.String(60), nullable=False)
     weight_class = db.Column(db.Float)
 
